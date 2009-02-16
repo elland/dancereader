@@ -1,0 +1,14 @@
+application: dancereader
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /img
+  static_dir: images
+- url: /css
+  static_dir: skin
+- url: /js
+  static_dir: skin
+- url: /.*
+  script: main.py

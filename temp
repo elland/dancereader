@@ -1,0 +1,21 @@
+feeds = db.GqlQuery("SELECT * FROM Feed")
+feeds = feeds.fetch(1000)
+values.values['feeds'] = feeds
+return(values.values)
+
+
+
+
+	key = self.request.get('feed')
+	user = users.get_current_user()
+	feeds = Feed.gql('WHERE owner = :owner', owner=user)
+	for feed in feeds:
+		key2 = str(feed.key())
+		key = str(key)
+		if key2 == key:
+			posts =Post.gql("WHERE owner = :owner AND feed = :feed",
+							owner = user, feed = feed)
+			posts = posts.fetch(10)
+			values.values['posts'] = posts
+			self.redirect(template.render('./Templates/main.html',values.values))
+			

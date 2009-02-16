@@ -1,0 +1,84 @@
+<html>
+<head>
+	<title>Dance Reader</title>
+	<link rel="stylesheet" type="text/css" href="/css/styles.css">
+	<script src="/js/jquery.js" type="text/javascript"></script>
+	<script src="/js/main.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+	<div id="header">
+		<h2>Dance Reader</h2>
+		<p class="links">
+			<a href="/config">configuration</a> |
+			<a href="/logout">logout</a>
+		</p>
+	</div>
+	
+	<div id="sidebar">
+		<ul>
+		<a href="/">Home</a>
+		{% ifnotequal feeds '' %}
+			{% for feed in feeds %}
+			<li><a href="/feed?feed={{feed.key}}">{{feed.link}}</a></li>
+			{% endfor %}
+		{% endifnotequal %}	
+		</ul>
+	</div>
+	
+	<div id="main">
+		<div id="overbar">
+			<div class="links">
+			<a href="" class="addfeed"><img src="/img/feed_add.png" /></a>
+			<a href="" class="deletefeed"><img src="/img/feed_delete.png" /></a>
+			<a href="" class="expandall">expand all	</a>
+			<a href="" class="collapseall">collapse all</a>
+			</div>
+				{% ifnotequal feedLink '/'%}
+				<h2>{{feed_title}}</h2>
+				{% else %}
+				   <h2>Come now and dance, babe, dance!</h2>
+				{% endifnotequal %}
+		</div>
+		
+		<div id="content">
+
+				<div id="post">
+					po
+					{% ifnotequal feedLink '/' %}	
+						{% for post in posts %}
+					<h3 class="posttitle">
+						<a>{{post.title}}</a>
+					</h3>
+					<p class="postcontent">
+						<a href="{{post.url}}">{{post.title}}</a>
+						<br>
+						{{post.summary}}
+					</p>
+						{% endfor %}
+					{% endifnotequal %}
+				</div>
+
+		</div>
+	</div>
+	
+	<div id="addfeedpopup">
+		<a id="popupclose" href="">close</a>
+		<h2>Add new feed</h2>
+		<form action="/" method="post" accept-charset="utf-8">		
+			<input type="text" name="url" value="" id="url">
+			<input type="submit" value="Dance!">
+		</form>
+	</div>
+	
+	<div id="deletefeedpopup">
+		<h2>Are you sure you can't dance it anymore?</h2>
+		<a href="deleteFeed?feedtodelete={{feedLink}}" id="selectbutton" class="confirm">Yes, I'm tired!</a>
+		<a href="" id="selectbutton" class="cancel">No, I want to dance more.</a>
+	</div>
+	
+	<div id="popupbg"></div>
+
+</body>
+</html>
