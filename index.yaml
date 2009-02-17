@@ -9,3 +9,40 @@ indexes:
 # manually, move them above the marker line.  The index.yaml file is
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
+
+# Used 2 times in query history.
+- kind: Post
+  properties:
+  - name: feed
+  - name: owner
+  - name: date
+
+# Used once in query history.
+- kind: Post
+  properties:
+  - name: feed
+  - name: owner
+  - name: date
+    direction: desc
+
+# Unused in query history -- copied from input.
+- kind: Post
+  properties:
+  - name: feed
+  - name: owner
+  - name: modified
+
+# Unused in query history -- copied from input.
+- kind: Post
+  properties:
+  - name: feed
+  - name: owner
+  - name: modified
+    direction: desc
+
+# Used 9 times in query history.
+- kind: Post
+  properties:
+  - name: feed
+  - name: owner
+  - name: pdate

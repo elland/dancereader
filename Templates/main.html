@@ -10,7 +10,9 @@
 <body>
 	<div id="header">
 		<h2>Dance Reader</h2>
+		
 		<p class="links">
+			<a>Hello, {{user}}</a> | 
 			<a href="/config">configuration</a> |
 			<a href="/logout">logout</a>
 		</p>
@@ -49,13 +51,12 @@
 					{% ifnotequal feedLink '/' %}	
 						{% for post in posts %}
 					<h3 class="posttitle">
-						<a>{{post.title}}</a>
-					</h3>
+						<a>{{post.title}}</a></h3>
 					<p class="postcontent">
 						<a href="{{post.url}}">{{post.title}}</a>
-						<br>
-						{{post.summary}}
-					</p>
+						{{post.summary}}<br>
+						<small>{{post.date}}</small>
+						</p>
 						{% endfor %}
 					{% endifnotequal %}
 				</div>

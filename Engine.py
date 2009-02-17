@@ -4,6 +4,7 @@ from urllib2 import urlopen as open
 from BeautifulSoup import BeautifulSoup as soup
 from feedparser import parse as feedparse
 import re
+import datetime
 
 def getFeeds(user):
 	feeds = Feed.gql("WHERE owner = :owner", owner=user)
@@ -79,6 +80,7 @@ def parseFeed(feed, user):
 		rsslink = soupd.findAll('link', 
 				type="application/atom+xml") # or atom
 	rsslink = str(rsslink) 					#and put to a string
+
 	
 	#no need to understand this as none will ever comprehend RegExp
 	# a hint, it strips the link out of the html tag
@@ -90,12 +92,13 @@ def parseFeed(feed, user):
 		link = str(link)
 		link = link.strip('""')
 	elif link == 0:
-		print 'erro'
+		print 'erro, linha 94 engine.py, link para rss n encontrado!'
 	else:
 		link = link.group()
 		link = str(link)
 		link = link.strip('href=')
 		link = link.strip('""')
+	feed.rsslink = link #we will need to store this, for updates
 	# now some more fun, getting the real thing, xml content
 	#from the link we have
 	xml = open(link)
@@ -115,15 +118,15 @@ def parseFeed(feed, user):
 		if k.entries[x].has_key('author') is True:
 		          post.author = k.entries[x].author + ' sings '
 		else:
-		   post.author ='Anonimoys'
+		   post.author ='Anonymous'
 		if k.entries[x].has_key('category') is True:
 			post.category =' on '+ k.entries[x].category
 		else:
 			post.category = ''
-		if k.entries[x].has_key('modified') is True:
-			post.modified =' - On ' +  k.entries[x].modified 
-		else:
-			post.modified = ''
+		if k.entries[x].has_key('date_parsed') is True:
+			date = parseDate(k.entries[x].date_parsed)
+			post.date = date
+			
 		if k.entries[x].has_key('summary') is True:
 			post.summary = k.entries[x].summary
 		else:
@@ -139,7 +142,19 @@ def parseFeed(feed, user):
 		post.put()
 		
 	return(feed)
-	
-	
-	
 
+
+def parseDate(pdate):
+	date = datetime.datetime(
+		pdate[0], pdate[1], pdate[2], pdate[3], pdate[4], pdate[5])
+	return date
+	
+	
+# now the important part, gettin up to date, dance it!
+
+def update():
+	allfeeds = Feed.gql('')
+	allposts = Post.gql('')
+	
+	
+	

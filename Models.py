@@ -6,8 +6,9 @@ class values(object):
 	feeds = db.StringProperty()
 	feed_title = db.StringProperty()
 	feedLink = db.StringProperty()
+	user = db.StringProperty
 	values = {
-			'posts': posts, 'feeds': feeds,
+			'posts': posts, 'feeds': feeds, 'user' : user,
 			'feed_title': feed_title, 'feedLink': feedLink}
 	
 class Feed(db.Model):
@@ -15,7 +16,7 @@ class Feed(db.Model):
 	url = db.StringProperty(required=True)
 	link = db.StringProperty()
 	title = db.StringProperty()
-	
+	rsslink = db.StringProperty()
 	
 class Post(db.Model):
 	owner = db.UserProperty()
@@ -24,7 +25,6 @@ class Post(db.Model):
 	author = db.StringProperty()
 	summary = db.TextProperty()
 	category = db.StringProperty()
-	modified = db.StringProperty()
+	date = db.DateTimeProperty()
 	feed = db.ReferenceProperty(Feed, collection_name='feed')
-
 

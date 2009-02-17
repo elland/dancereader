@@ -8,10 +8,14 @@ from google.appengine.ext.webapp import template
 from google.appengine.api import users
 from Models import Feed, Post, values
 
+from urllib2 import urlopen as open
+import feedparser
+
 class MainPage(webapp.RequestHandler): #handles the / page
 	def get(self):  #the page itself is generated here
 		user = users.get_current_user()
 		if user:
+			values.values['user'] = user.nickname()
 		 	Engine.getFeeds(user)
 			values.values['feedLink'] = '/'
 			self.response.out.write(template.render(
@@ -64,16 +68,16 @@ class DeleteFeed(webapp.RequestHandler):
 		if ftd == '/':
 			self.redirect('/')
 		else:
-			feed = Feed.gql(
+			feeds = Feed.gql(
 				"WHERE owner = :owner AND link = :link",
 				owner=user, link = ftd)
-			posts = Post.gql(
-				"WHERE owner = :owner AND feed = :feed",
-				owner = user, feed = feed)
-			posts.fetch(1000)
+			feeds = feeds.fetch(1)
+			for feed in feeds:
+				posts = Post.gql("WHERE owner = :owner AND feed = :feed",
+							owner = user, feed = feed)
+			posts = posts.fetch(1000)
+			db.delete(posts)
 			db.delete(feed)
-			for post in posts:
-				db.delete(post)
 			self.redirect('/')
 		
 
@@ -95,7 +99,27 @@ class Logout(webapp.RequestHandler):
 			self.redirect('/')
 
 
-
+class test(webapp.RequestHandler): # for testing purpose only
+	def get(self):
+		user = users.get_current_user()
+		allfeeds = Feed.gql('WHERE owner = :owner', owner = user)
+		allfeeds = allfeeds.fetch(1000)
+		x = 0 
+		for feed in allfeeds:
+		
+			post_newest = Post.gql("WHERE owner = :owner AND feed = :feed"
+									" ORDER BY date DESC",
+									owner = user, feed = feed)
+			post_newest = post_newest.fetch(1)
+			xml = open(feed.rsslink)
+			xml = xml.read()
+			k = feedparser.parse(xml)
+			xmldate = Engine.parseDate(k.entries[0].date_parsed)
+			date = post_newest[0].date
+			if xmldate > date:
+				
+			
+			
 def main():
 	app = webapp.WSGIApplication([
 	('/', MainPage),
@@ -103,6 +127,7 @@ def main():
 	('/deleteFeed', DeleteFeed),
 	('/login', Login),
 	('/logout', Logout),
+	('/test', test),
 	], debug=True)
 	wsgiref.handlers.CGIHandler().run(app)
 	
